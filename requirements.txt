@@ -1,0 +1,4 @@
+mypy
+ipykernel
+spotipy
+python-dotenv
