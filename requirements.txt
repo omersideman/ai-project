@@ -2,3 +2,4 @@ mypy
 ipykernel
 spotipy
 python-dotenv
+pandas
