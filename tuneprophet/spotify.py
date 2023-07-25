@@ -46,53 +46,49 @@ class Spotify:
         print(len(tracks))
         return tracks
 
-    def playlist_to_csv(self, playlist_url: str, name: str):
+    def playlist_to_df(self, playlist_url: str,):
 
-        tracks = self.get_playlist_tracks(playlist_url)
+        results = self.get_playlist_tracks(playlist_url)
 
-        if not tracks:
+        if not results:
             raise ValueError('No results found')
 
-        df = pd.json_normalize(tracks)
-        filepath = f'../data/{name}.csv'
-        create_dirs_if_not_exist(filepath)
-        df.to_csv(filepath, index=False)
+        tracks = [t['track'] for t in results]
+
+        clean = []
+
+        for track in tracks:
+            artist_uri = track['artists'][0]['uri']
+            artist_info = sp.artist(artist_uri)
+            audio_features = sp.audio_features(track['uri'])[0] # type: ignore
+
+            record = {'track_name': track['name'],
+                      'track_pop': track['popularity'],
+                      'artist': track['artists'][0]['name'],
+                      'artist_pop': artist_info['popularity'],  # type: ignore
+                      'album': track['album']['name'],
+                      'length': track['duration_ms'],
+                      'track_uri': track['uri']}
+
+            record.update(audio_features)
+            clean.append(record)
+
+        df = pd.json_normalize(clean)
+
+        return df
 
     def combine_to_csv(self, playlist_urls: list, name: str):
-        track_lists = [self.get_playlist_tracks(
-            url) for url in playlist_urls]
-        combined_tracks = [
-            track for tracklist in track_lists for track in tracklist]
 
-        combined_tracks = [track['track'] for track in combined_tracks]
+        dataframes = [self.playlist_to_df(url) for url in playlist_urls]
+        combined_df = pd.concat(dataframes, ignore_index=True)
+        unique_df = combined_df.drop_duplicates()
 
-        tracks = []
-        for track in combined_tracks:
-            if track not in tracks:
-                tracks.append(track)
+        print(len(combined_df))
 
-        print(combined_tracks[0])
-
-        # # combined_tracks = []
-        # # for tracklist in track_lists:
-        # #     combined_tracks.extend(tracklist)
-
-        # unique_ids = set()
-        # unique_tracks_list = []
-
-        # for d in combined_tracks:
-        #     pretty_print(d)
-        #     if d['track']["id"] not in unique_ids:
-        #         unique_ids.add(d['track']["id"])
-        #     unique_tracks_list.append(d)
-
-        # unique_tracks = set(combined_tracks)
-        # unique_tracks_list = list(unique_tracks)
-
-        print(len(combined_tracks))
-        df = pd.DataFrame(combined_tracks)
-        unique_df = df.drop_duplicates(subset="id")
         filepath = f'../data/{name}.csv'
+
         create_dirs_if_not_exist(filepath)
+
         unique_df.to_csv(filepath, index=False)
-        return (filepath)
+
+        return unique_df
