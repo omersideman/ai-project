@@ -3,3 +3,5 @@ ipykernel
 spotipy
 python-dotenv
 pandas
+types-requests
+tqdm
