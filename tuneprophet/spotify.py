@@ -10,7 +10,6 @@ import pandas as pd
 from spotipy.oauth2 import SpotifyClientCredentials
 from tuneprophet.utils import pretty_print
 from utils import create_dirs_if_not_exist
-# from Nice that I was treating the data,.notebook import tqdm
 from requests.exceptions import ReadTimeout  # type: ignore
 
 load_dotenv()
@@ -82,15 +81,16 @@ class Spotify:
         print('Creating dataframe')
 
         for i, track in enumerate(tracks):
-            print(f'Track {i}')
+            # print(f'Track {i}')
             artist_uri = track['artists'][0]['uri']
-            artist_info = self._call_spotify_api(sp.artist, artist_uri)
+            # artist_info = self._call_spotify_api(sp.artist, artist_uri)
             audio_features = self._call_spotify_api(
                 sp.audio_features, track['uri'])[0]  # type: ignore
+            print(f'Popularity: {track["popularity"]}')
             record = {'track_name': track['name'],
                       'track_pop': track['popularity'],
                       'artist': track['artists'][0]['name'],
-                      'artist_pop': artist_info['popularity'],  # type: ignore
+                      #   'artist_pop': artist_info['popularity'],  # type: ignore
                       'album': track['album']['name'],
                       'length': track['duration_ms'],
                       'track_uri': track['uri']}
