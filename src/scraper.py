@@ -1,3 +1,4 @@
+import json
 import requests
 from bs4 import BeautifulSoup
 import urllib.request
@@ -7,67 +8,21 @@ from html_table_parser.parser import HTMLTableParser
 import pandas as pd
 
 
-# Opens a website and read its
-# binary contents (HTTP Response Body)
-def url_get_contents(url):
+def url_to_json(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
 
-    # Opens a website and read its
-    # binary contents (HTTP Response Body)
-
-    try:
-        # Send an HTTP GET request to the URL
-        req = urllib.request.Request(url)
-        response = urllib.request.urlopen(req)
-
-        # Check the status code of the response
-        if response.status == 200:
-            # The request was successful
-            html = response.read()
-            # Do something with the HTML content
-        elif response.status == 301:
-            # The URL has permanently moved
-            new_url = response.getheader('Location')
-            print('The URL has moved to:', new_url)
-            # Send a new request to the new URL
-            req = urllib.request.Request(new_url)
-            response = urllib.request.urlopen(req)
-            html = response.read()
-            # Do something with the HTML content
-        else:
-            # The request failed for some other reason
-            raise RuntimeError('Error code: ', response.status)
-
-    except urllib.error.HTTPError as e:
-        raise RuntimeError('HTTP error: ', e.code)
-    except urllib.error.URLError as e:
-        raise RuntimeError('URL error: ', e.reason)
-    except Exception as e:
-        raise RuntimeError('Error occurred: ', e)
-
-    #reading contents of the website
-    return html
-
-def scrape(url):
-    # defining the html contents of a URL.
-    xhtml = url_get_contents(url).decode('utf-8')
-
-    # Defining the HTMLTableParser object
-    p = HTMLTableParser()
-
-    # feeding the html contents in the
-    # HTMLTableParser object
-    p.feed(xhtml)
-
-    # Now finally obtaining the data of
-    # the table required
-    pprint(p.tables[1])
-
-    # converting the parsed data to
-    # dataframe
-    print("\n\nPANDAS DATAFRAME\n")
-    print(pd.DataFrame(p.tables[1]))
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON data and return it as a Python object
+        return json.loads(response.content)
+    else:
+        # The request failed for some reason
+        print(f"Error: {response.status_code} - {response.reason}")
+        return None
 
 
-def soup_scrape(url):
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.content, "html.parser")
+def scrape_chartex():
+    url = 'https://chartex.com/api/tiktok_songs/?pageSize=200&ordering=-number_videos&page=9'
+    obj = url_to_json(url)
+    print(obj)
