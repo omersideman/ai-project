@@ -1,14 +1,12 @@
 
 # Wrapper for Spotify API - https://spotipy.readthedocs.io/en/latest/#
 
-import json
 from os import environ
 import time
 from dotenv import load_dotenv
 import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyClientCredentials
-from src.utils import pretty_print
 from utils import create_dirs_if_not_exist
 from requests.exceptions import ReadTimeout  # type: ignore
 
@@ -25,13 +23,19 @@ class Spotify:
 
     def _call_spotify_api(self, func, *args, **kwargs):
         '''wrapper for spotify api calls to handle timeouts'''
-        for i in range(3):
+
+        max_attempts = 3
+        backoff = 10
+
+        for i in range(max_attempts):
             try:
-                return func(*args, **kwargs)
+                res = func(*args, **kwargs)
+                if res == None:
+                    raise ValueError('No results found')
+                return res
             except ReadTimeout:
                 print('ReadTimeout - waiting 10 seconds')
-                time.sleep(10)
-                return func(*args, **kwargs)
+                time.sleep(backoff)
 
     def get_playlist_info(self, playlist_url: str):
         ''' returns basic info about a playlist'''
@@ -82,7 +86,7 @@ class Spotify:
 
         for i, track in enumerate(tracks):
             # print(f'Track {i}')
-            artist_uri = track['artists'][0]['uri']
+            # artist_uri = track['artists'][0]['uri']
             # artist_info = self._call_spotify_api(sp.artist, artist_uri)
             audio_features = self._call_spotify_api(
                 sp.audio_features, track['uri'])[0]  # type: ignore
@@ -118,3 +122,35 @@ class Spotify:
         unique_df.to_csv(filepath, index=False)
 
         return unique_df
+
+    def get_track_info(self, track_uri: str):
+        '''returns info about a track'''
+
+        track = self._call_spotify_api(sp.track, track_uri)
+        assert (track)
+
+        artist = self._call_spotify_api(sp.artist, track['artists'][0]['uri'])
+        assert (artist)
+
+        basic_info = {'track_name': track['name'],
+                      'track_pop': track['popularity'],
+                      'artist': track['artists'][0]['name'],
+                      'artist_pop': artist['popularity'],
+                      'album': track['album']['name'],
+                      'length': track['duration_ms'],
+                      'track_uri': track['uri']}
+
+        audio_features = self._call_spotify_api(
+            sp.audio_features, track['uri'])[0]  # type: ignore
+
+        if audio_features == None:
+            print(f"WARNING: No Audio features found for track {self.id_to_url(track['id'])}")
+            return basic_info
+
+        basic_info.update(audio_features)
+
+        return basic_info
+
+    def id_to_url(self, track_id):
+        '''returns a spotify url from a track id'''
+        return f'https://open.spotify.com/track/{track_id}'

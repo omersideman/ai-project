@@ -1,11 +1,5 @@
 import json
 import requests
-from bs4 import BeautifulSoup
-import urllib.request
-import urllib.error
-from pprint import pprint
-from html_table_parser.parser import HTMLTableParser
-import pandas as pd
 
 
 def url_to_json(url):
