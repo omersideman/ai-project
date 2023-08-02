@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyClientCredentials
-from utils import create_dirs_if_not_exist
+from file_utils import create_dirs_if_not_exist
 from requests.exceptions import ReadTimeout  # type: ignore
 
 load_dotenv()

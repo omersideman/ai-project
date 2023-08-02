@@ -6,3 +6,4 @@ pandas
 types-requests
 matplotlib
 ipywidgets
+seaborn
