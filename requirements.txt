@@ -1,4 +1,6 @@
+scikit-learn
 mypy
+tqdm
 ipykernel
 spotipy
 python-dotenv
