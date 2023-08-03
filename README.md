@@ -13,9 +13,15 @@ Using AI to predict whether new music will go viral on social media.
        python -m ipykernel install --user --name=venv
    ```
 2. Duplicate .env.example, rename to .env and replace keys (only if need to use spotify api) and path to src directory.
-3. When creating a new notebook, paste this at the top:
-```from dotenv import load_dotenv
+
+### Other important things
+1. When creating a new notebook, paste this at the top:
+```
+from dotenv import load_dotenv
 load_dotenv()
 src_dir = os.getenv('SRC_DIR')
 assert(src_dir)
-os.chdir(src_dir)```
+os.chdir(src_dir)
+```
+
+2. when installing a new package,make sure to add it to requirements.txt
