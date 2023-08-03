@@ -5,3 +5,5 @@ python-dotenv
 pandas
 types-requests
 matplotlib
+ipywidgets
+seaborn
