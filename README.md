@@ -12,5 +12,4 @@ Using AI to predict whether new music will go viral on social media.
        pip install -r requirements.txt
        python -m ipykernel install --user --name=venv
    ```
-
-2. Duplicate .env.example, rename to .env and replace keys.
+2. Duplicate .env.example, rename to .env and replace keys (only if need to use spotify api) and path to src directory.
