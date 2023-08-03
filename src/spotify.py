@@ -15,7 +15,7 @@ load_dotenv()
 # auth_manager = SpotifyClientCredentials()
 # sp = spotipy.Spotify(auth_manager=auth_manager)
 
-scope = "playlist-modify-public"
+scope = "playlist-modify-private playlist-modify-public"
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
 
@@ -155,34 +155,26 @@ class Spotify:
 
         return basic_info
 
-    def create_spotify_playlist(self, song_ids, playlist_name):
-        '''creates a spotify playlist with the given name and adds the songs'''
-        # Get the user ID of the authenticated user
-        load_dotenv()
-        auth_manager = SpotifyClientCredentials()
-        sp = spotipy.Spotify(auth_manager=auth_manager)
+    def create_spotify_playlist(self, track_ids, playlist_name):
+        '''creates a spotify playlist with the given name and adds the tracks'''
 
-        track_uris = [self.id_to_url(id) for id in song_ids]
+        track_uris = [self.id_to_url(id) for id in track_ids]
 
-        user = sp.current_user()
-        user_id = user['id'] #type: ignore
+        # get user id
+        user = self._call_spotify_api(sp.current_user)
+        user_id = user['id']  # type: ignore
 
-        # Create a new playlist with the given name
-        playlist = sp.user_playlist_create(user_id, playlist_name)
+        # create playlist
+        playlist = self._call_spotify_api(
+            sp.user_playlist_create, user_id, playlist_name, True)
 
-        sp.playlist_add_items(
-            playlist['id'], track_uris) # type: ignore
+        # spotify api only allows 100 tracks to be added at a time
+        for i in range(0, len(track_uris), 100):
+            print(i)
+            self._call_spotify_api(sp.playlist_add_items,
+                                   playlist['id'], track_uris[i:i + 100])
 
-        # # Add each song to the playlist
-        # for url in song_ids:
-        #     # Search for the song using the URL
-        #     results = sp.search(q=url, type='track')
-
-        #     # Get the first result (assuming it's the correct song)
-        #     track_uri = results['tracks']['items'][0]['uri']
-
-        #     # Add the song to the playlist
-        #     sp.user_playlist_add_tracks(user_id, playlist['id'], [track_uri])
+        return playlist
 
     def id_to_url(self, track_id):
         '''returns a spotify url from a track id'''
