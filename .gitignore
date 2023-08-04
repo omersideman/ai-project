@@ -1,3 +1,6 @@
+.cache*
+data/track_downloads/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
