@@ -172,7 +172,7 @@ class Spotify:
         for i in range(0, len(track_uris), 100):
             print(i)
             self._call_spotify_api(sp.playlist_add_items,
-                                   playlist['id'], track_uris[i:i + 100])
+                                   playlist['id'], track_uris[i:i + 100]) # type: ignore
 
         return playlist
 
