@@ -19,7 +19,11 @@ Using AI to predict whether new music will go viral on social media.
 1. When creating a new notebook, paste this at the top:
 
 ```
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+=======
 import sys; sys.path.append('..')
+import os
 from dotenv import load_dotenv
 load_dotenv()
 src_dir = os.getenv('SRC_DIR')
