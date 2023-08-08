@@ -9,3 +9,5 @@ types-requests
 matplotlib
 ipywidgets
 seaborn
+pytorch=1.10.1
+numpy
