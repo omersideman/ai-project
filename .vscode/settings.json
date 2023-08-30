@@ -1,5 +1,8 @@
 {
   "python.linting.mypyEnabled": true,
   "python.linting.enabled": true,
-  "terminal.integrated.env.windows": { "PYTHONPATH": "${workspaceFolder}" }
+  "terminal.integrated.env.windows": {
+    "PYTHONPATH": "${workspaceFolder}"
+  },
+  "python.analysis.extraPaths": ["./src"]
 }

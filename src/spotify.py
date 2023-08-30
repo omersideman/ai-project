@@ -6,14 +6,17 @@ import time
 from dotenv import load_dotenv
 import spotipy
 import pandas as pd
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from file_utils import create_dirs_if_not_exist
 from requests.exceptions import ReadTimeout  # type: ignore
 
 load_dotenv()
 
-auth_manager = SpotifyClientCredentials()
-sp = spotipy.Spotify(auth_manager=auth_manager)
+# auth_manager = SpotifyClientCredentials()
+# sp = spotipy.Spotify(auth_manager=auth_manager)
+
+scope = "playlist-modify-private playlist-modify-public"
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
 
 class Spotify:
@@ -144,12 +147,34 @@ class Spotify:
             sp.audio_features, track['uri'])[0]  # type: ignore
 
         if audio_features == None:
-            print(f"WARNING: No Audio features found for track {self.id_to_url(track['id'])}")
+            print(
+                f"WARNING: No Audio features found for track {self.id_to_url(track['id'])}")
             return basic_info
 
         basic_info.update(audio_features)
 
         return basic_info
+
+    def create_spotify_playlist(self, track_ids, playlist_name):
+        '''creates a spotify playlist with the given name and adds the tracks'''
+
+        track_uris = [self.id_to_url(id) for id in track_ids]
+
+        # get user id
+        user = self._call_spotify_api(sp.current_user)
+        user_id = user['id']  # type: ignore
+
+        # create playlist
+        playlist = self._call_spotify_api(
+            sp.user_playlist_create, user_id, playlist_name, True)
+
+        # spotify api only allows 100 tracks to be added at a time
+        for i in range(0, len(track_uris), 100):
+            print(i)
+            self._call_spotify_api(sp.playlist_add_items,
+                                   playlist['id'], track_uris[i:i + 100]) # type: ignore
+
+        return playlist
 
     def id_to_url(self, track_id):
         '''returns a spotify url from a track id'''

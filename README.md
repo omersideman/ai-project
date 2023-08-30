@@ -15,8 +15,15 @@ Using AI to predict whether new music will go viral on social media.
 2. Duplicate .env.example, rename to .env and replace keys (only if need to use spotify api) and path to src directory.
 
 ### Other important things
+
 1. When creating a new notebook, paste this at the top:
+
 ```
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+=======
+import sys; sys.path.append('..')
+import os
 from dotenv import load_dotenv
 load_dotenv()
 src_dir = os.getenv('SRC_DIR')
