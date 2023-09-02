@@ -1,6 +1,6 @@
 import torch
 from tqdm import tqdm
-from project.data_iterator import  dataIterator
+from src.utils.data_iterator import  dataIterator
 
 class trainer:
     def __init__(self, model, optimizer, loss_fn, epochs, batch, shuffle = False, verbose = False):
@@ -11,7 +11,7 @@ class trainer:
         self.bsize = batch
         self.shuffle = shuffle
         self.verbose = verbose
-    
+
     def fit(self, X_train, y_train, X_val = None, y_val = None):
         res_train = [[],[]]
         res_val = [[],[]]
@@ -34,7 +34,7 @@ class trainer:
             return res_train
         else:
             return res_train, res_val
-    
+
     def train_epoch(self, loader):
         total_loss = 0.
         total_correct = 0.
@@ -43,7 +43,7 @@ class trainer:
             total_loss += loss
             total_correct += corr
         return total_loss, total_correct
-    
+
     def train_batch(self, X, y):
         self.optimizer.zero_grad()
         y_pred = self.model(X)
@@ -52,7 +52,7 @@ class trainer:
         self.optimizer.step()
         corr = (torch.argmax(y_pred,dim=1) == y).type(torch.LongTensor).sum()
         return loss.item(), corr.item()
-    
+
     def evaluate(self, X, y):
         with torch.no_grad():
             y_pred = self.model(X)
