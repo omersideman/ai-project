@@ -6,21 +6,16 @@ from youtube_search import YoutubeSearch
 import tempfile
 
 
-def get_audio_features(track_info, output_directory=None):
-    youtube_url = find_youtube_url(track_info)
-    if not youtube_url:
-        return None
-    filename = track_info["artist"] + " - " + track_info["track_name"] + ".wav"
-    out_dir = output_directory or 'data/track_downloads'
-    os.makedirs(out_dir, exist_ok=True)
-    audio_path = download_from_youtube(youtube_url, out_dir, filename)
+def get_audio_features(track_info, output_directory='../data/track_downloads', delete_track=False):
+
+    audio_path = download_track(track_info, output_directory)
 
     if audio_path is None:
         return None
-    
+
     features = extract_features(audio_path)
 
-    if output_directory is None:
+    if delete_track:
         os.remove(audio_path)
 
     return features
@@ -42,7 +37,7 @@ def download_from_youtube(url, output_directory, filename):
 
 
 def extract_features(audio_path):
-    y, sr = librosa.load(audio_path, mono=True, duration=30)
+    y, sr = librosa.load(audio_path, mono=True, duration=60)
     chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
     rmse = librosa.feature.rms(y=y)
     spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
@@ -55,9 +50,15 @@ def extract_features(audio_path):
                      "spec_bw", "rolloff", "zcr", "mfcc"]
     feature_values = [chroma_stft, rmse,
                       spec_cent, spec_bw, rolloff, zcr, mfcc]
+
+    # print feature names and size of each feature
+    for feat, name in zip(feature_values, feature_names):
+        print(f"{name}: {feat.shape}")
+
     means = [np.mean(feat) for feat in feature_values]
 
     features = dict(zip(feature_names, means))
+
     print(f"Extracted features: {features}")
 
     return features
@@ -72,3 +73,13 @@ def find_youtube_url(track_info):
     url = 'https://www.youtube.com' + result['url_suffix']  # type: ignore
     print(f'Found youtube url: {url}')
     return url
+
+def download_track(track_info, output_directory):
+    youtube_url = find_youtube_url(track_info)
+    if not youtube_url:
+        return None
+    # filename = track_info["artist"] + " - " + track_info["track_name"] + ".wav"
+    filename = track_info["id"] + ".wav"
+    os.makedirs(output_directory, exist_ok=True)
+    audio_path = download_from_youtube(youtube_url, output_directory, filename)
+    return audio_path
