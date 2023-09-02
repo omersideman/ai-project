@@ -3,7 +3,7 @@ import os
 import librosa
 import numpy as np
 from youtube_search import YoutubeSearch
-import tempfile
+import signal
 
 
 def get_audio_features(track_info, output_directory='../data/track_downloads', delete_track=False):
@@ -26,7 +26,7 @@ def download_from_youtube(url, output_directory, filename):
     yt = YouTube(url)
     try:
         yt.streams.filter(only_audio=True).first().download(  # type: ignore
-        output_path=output_directory, filename=filename)
+            output_path=output_directory, filename=filename)
     except Exception as e:
         print(f'Could not download {filename}. Error: {e}')
         return None
@@ -74,6 +74,7 @@ def find_youtube_url(track_info):
     print(f'Found youtube url: {url}')
     return url
 
+
 def download_track(track_info, output_directory):
     youtube_url = find_youtube_url(track_info)
     if not youtube_url:
@@ -83,3 +84,15 @@ def download_track(track_info, output_directory):
     os.makedirs(output_directory, exist_ok=True)
     audio_path = download_from_youtube(youtube_url, output_directory, filename)
     return audio_path
+
+
+def load_audio_with_timeout(audio_path, timeout=5):
+    def handler(signum, frame):
+        raise TimeoutError('Timeout loading audio file')
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(timeout)
+    try:
+        y, sr = librosa.core.load(audio_path)
+    finally:
+        signal.alarm(0)
+    return y, sr
