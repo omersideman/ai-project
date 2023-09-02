@@ -11,7 +11,7 @@ def set_style(ax):
 
 def hist(df, x, ax, main_color=colors[1], second_color=colors[0], bins=30):
 
-    sns.histplot(data=df, x=x, bins=bins, ax=ax, # type: ignore
+    sns.histplot(data=df, x=x, bins=bins, ax=ax,  # type: ignore
                  kde=True, color=main_color,
                  edgecolor=second_color, line_kws={"linestyle": '--'}, linewidth=1
                  )
@@ -62,17 +62,17 @@ def stripplot(df, x, y, ax, palette=[colors[1], colors[2]]):
     set_style(ax)
 
 
-def plotCV(results, configures, size = (15,10)):
-    fig, axs = plt.subplots(2,2, figsize=size)
+def plotCV(results, configures, size=(15, 10)):
+    fig, axs = plt.subplots(2, 2, figsize=size)
     num_epochs = len(results[0][0][0])
 
-    for i,config in enumerate(configures):
+    for (config, result) in zip(configures, results):
         for j in range(2):
-            axs[j][0].plot(range(num_epochs), results[i][0][j], label=f'{config}')
+            axs[j][0].plot(range(num_epochs), result[j][0], label=f'{config}')
             axs[j][0].set_xlabel('epoch')
             axs[j][0].set_ylabel('loss')
 
-            axs[j][1].plot(range(num_epochs), results[i][1][j], label=f'{config}')
+            axs[j][1].plot(range(num_epochs), result[j][1], label=f'{config}')
             axs[j][1].set_xlabel('epoch')
             axs[j][1].set_ylabel('accuracy')
 
