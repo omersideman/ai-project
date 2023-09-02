@@ -11,3 +11,9 @@ ipywidgets
 seaborn
 torch
 numpy
+librosa
+flask
+requests
+pytube
+# pyaudio
+youtube-search
