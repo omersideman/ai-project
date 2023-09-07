@@ -18,3 +18,4 @@ pytube
 # pyaudio
 youtube-search
 scikit-image
+pychorus

@@ -22,23 +22,18 @@ def scale_minmax(X, min=0.0, max=1.0):
     return X_scaled
 
 
-def spectrogram_image(y, sr, out, hop_length, n_mels):
-    # use log-melspectrogram
-    mels = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=n_mels,
-                                          n_fft=hop_length*2, hop_length=hop_length)
-    # mels = numpy.log(mels + 1e-9) # add small number to avoid log(0)
-    mels = librosa.power_to_db(mels, ref=np.max)
-
+def save_spectrogram(spec, out_path):
+    create_dirs_if_not_exist(out_path)
     # min-max scale to fit inside 8-bit range
-    img = scale_minmax(mels, 0, 255).astype(numpy.uint8)
+    img = scale_minmax(spec, 0, 255).astype(numpy.uint8)
     img = numpy.flip(img, axis=0)  # put low frequencies at the bottom in image
     img = 255-img  # invert. make black==more energy
     print(f"Image shape: {img.shape}")
     # save as PNG
-    skimage.io.imsave(out, img)
+    skimage.io.imsave(out_path, img)
 
 
-def get_spectrograms(audio_directory, input_csv, output_directory, duration, start_index, end_index) -> list[np.ndarray]:
+def get_spectrograms(audio_directory, input_csv, output_directory, duration, start_index, end_index, res) -> list[np.ndarray]:
     """
     This function takes in a directory of audio files in .wav format, computes the
     mel spectrogram for the files corresponding to the rows start_index to end_index in the input_csv,
@@ -53,26 +48,29 @@ def get_spectrograms(audio_directory, input_csv, output_directory, duration, sta
     # Creating empty lists for mel spectrograms and labels
     mel_specs = []
 
+    # set resolution of spectrogram - bigger hops for lower resolution
+    hop_length = 2048 if res == 'low' else 1024
+
     # Looping through each row in the df
     for i in range(start_index, end_index):
 
-        print(f'Processing row {i} of {len(spotify_df)}')
+        print(f'Processing track {i} of {len(spotify_df)}')
 
         track_data = spotify_df.iloc[i]
 
         # Loading in the audio file
         spotify_id = track_data['id']
         audio_path = os.path.join(audio_directory, f'{spotify_id}.wav')
-        image_path = os.path.join(output_directory, f'{spotify_id}.jpg')
+        image_path = os.path.join(output_directory, f'{spotify_id}.png')
 
         if os.path.exists(image_path):
-            print(f"Spectogram already exists: {image_path}, skipping...")
+            print(f"specogram already exists: {image_path}, skipping...")
             continue
 
         # Computing the mel spectrogram
         try:
-            spect = get_mel_spectrogram(
-                audio_path, offset=0, duration=duration)
+            spec= get_mel_spectrogram(
+                audio_path, offset=0, duration=duration, hop_length=hop_length )
         except FileNotFoundError:
             print(f"WARNING: file not found: {audio_path}, skipping...")
             continue
@@ -81,19 +79,16 @@ def get_spectrograms(audio_directory, input_csv, output_directory, duration, sta
                 f"WARNING: file loading timed out for {audio_path}, skipping...")
             continue
 
-        # Saving the mel spectrogram as an image
-        print(f'SHape: {spect.shape}')
-        print(f"type: {type(spect)}'")
-        im = Image.fromarray(spect)
-        im.save(image_path)
-
         # adding to the list
-        mel_specs.append(spect)
+        mel_specs.append(spec)
+
+        # saving as png
+        save_spectrogram(spec, image_path)
 
     return mel_specs
 
 
-def get_mel_spectrogram(audio_path, offset, duration) -> np.ndarray:
+def get_mel_spectrogram(audio_path, offset, duration, hop_length) -> np.ndarray:
     """ This function takes in an audio file path, computes the
     mel spectrogram for the audio file, reshapes it so that it is the
     same size as the other spectrograms, and returns it as a numpy array."""
@@ -111,12 +106,11 @@ def get_mel_spectrogram(audio_path, offset, duration) -> np.ndarray:
         raise TimeoutError(f'Loading file: {audio_path} timed out')
 
     # settings
-    hop_length = 2048  # number of samples per time-step in spectrogram
     n_mels = 128  # number of bins in spectrogram. Height of image
 
     # Computing the mel spectrograms
-    spect = librosa.feature.melspectrogram(
+    spec= librosa.feature.melspectrogram(
         y=y, sr=sr, hop_length=hop_length, n_mels=n_mels)
-    spect = librosa.power_to_db(spect, ref=np.max)  # converting to decibals
+    spec= librosa.power_to_db(spec, ref=np.max)  # converting to decibals
 
-    return spect
+    return spec

@@ -97,3 +97,7 @@ def load_audio_with_timeout(audio_path, offset, duration, sample_rate=22050, tim
     finally:
         signal.alarm(0)
     return y, sr
+
+
+def find_chorus(audio_path):
+    pass
