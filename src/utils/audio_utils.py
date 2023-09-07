@@ -86,13 +86,14 @@ def download_track(track_info, output_directory):
     return audio_path
 
 
-def load_audio_with_timeout(audio_path, timeout=5):
+def load_audio_with_timeout(audio_path, offset, duration, sample_rate=22050, timeout=5):
     def handler(signum, frame):
         raise TimeoutError('Timeout loading audio file')
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(timeout)
     try:
-        y, sr = librosa.core.load(audio_path)
+        y, sr = librosa.core.load(
+            audio_path, sr=sample_rate, offset=offset, duration=duration)
     finally:
         signal.alarm(0)
     return y, sr
