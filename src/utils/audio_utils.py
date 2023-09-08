@@ -4,6 +4,7 @@ import librosa
 import numpy as np
 from youtube_search import YoutubeSearch
 import signal
+from pychorus import find_and_output_chorus
 
 
 def get_audio_features(track_info, output_directory='../data/track_downloads', delete_track=False):
@@ -100,5 +101,7 @@ def load_audio_with_timeout(audio_path, offset, duration, sample_rate=22050, tim
     return y, sr
 
 
-def find_chorus(audio_path):
-    pass
+def find_chorus(audio_path, duration):
+    chorus_start_sec = find_and_output_chorus(
+        input_file=audio_path, output_file=None, clip_length=duration)
+    return chorus_start_sec
