@@ -94,6 +94,7 @@ def load_audio_with_timeout(audio_path, offset, duration, sample_rate=22050, tim
     try:
         y, sr = librosa.core.load(
             audio_path, sr=sample_rate, offset=offset, duration=duration)
+
     finally:
         signal.alarm(0)
     return y, sr
