@@ -1,6 +1,8 @@
 .cache*
 data/track_downloads/*
 *DS_Store
+data/spectrograms*
+data/organized_spectrograms*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
