@@ -42,9 +42,11 @@ def train_test_split(input_dir, output_dir, test_ratio):
     os.makedirs(testing_path, exist_ok=True)
 
     # calculate how many testing images to take from each class
-    classes = os.listdir(input_dir)
-    num_images_per_class = [
-        len(os.listdir(os.path.join(input_dir, class_name))) for class_name in classes]
+    # ignore non directories
+    classes = [f for f in os.listdir(input_dir) if os.path.isdir(
+        os.path.join(input_dir, f))]
+    num_images_per_class = [num_images(os.path.join(input_dir, class_name))
+                            for class_name in classes]
     print(f'Number of images per class: {num_images_per_class}')
     num_testing_images = [
         int(num * test_ratio) for num in num_images_per_class]
@@ -69,3 +71,10 @@ def train_test_split(input_dir, output_dir, test_ratio):
         for f in train_files:
             os.rename(os.path.join(class_dir, f),
                       os.path.join(class_training_dir, f))
+
+        return training_path, testing_path
+
+
+def num_images(directory_path):
+    png_files = [f for f in os.listdir(directory_path) if f.endswith('.png')]
+    return len(png_files)
