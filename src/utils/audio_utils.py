@@ -105,3 +105,15 @@ def find_chorus(audio_path, duration):
     chorus_start_sec = find_and_output_chorus(
         input_file=audio_path, output_file=None, clip_length=duration)
     return chorus_start_sec
+
+
+def find_chorus_with_timeout(audio_path, duration, timeout=10):
+    def handler(signum, frame):
+        raise TimeoutError('Timeout loading audio file')
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(timeout)
+    try:
+        chorus_start_sec = find_chorus(audio_path, duration)
+    finally:
+        signal.alarm(0)
+    return chorus_start_sec

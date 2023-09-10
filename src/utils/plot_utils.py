@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+import librosa
+import numpy as np
 
 colors = ["#09101F", "#72DDF7", '#F7AEF8']
 
@@ -77,3 +79,23 @@ def plotCV(results, configures, size=(15, 10)):
             axs[j][1].set_ylabel('accuracy')
 
     plt.legend()
+
+
+def plot_audio_wave(wave):
+    plt.plot(wave)
+    plt.title("Signal")
+    plt.xlabel("Time (samples)")
+    plt.ylabel("Amplitude")
+
+def plot_spectrogram(wave, sr):
+    # Computing the mel spectrogram
+    spect = librosa.feature.melspectrogram(y=wave, sr=sr, n_fft=2048, hop_length=512)
+    spect_db = librosa.power_to_db(spect, ref=np.max)  # converting to decibals
+    #
+    # Plotting the spectrogram
+    plt.figure(figsize=(8, 5))
+    librosa.display.specshow(spect_db, sr=sr, x_axis="time", y_axis="log")
+    plt.colorbar(format="%+2.0f dB")
+
+    plt.title("Mel Spectrogram")
+    print(f"Mel Spectrogram shape: {spect.shape}")

@@ -7,7 +7,7 @@ import librosa
 import numpy
 import skimage.io
 from src.utils.file_utils import create_dirs_if_not_exist
-from src.utils.audio_utils import load_audio_with_timeout
+from src.utils.audio_utils import load_audio_with_timeout, find_chorus_with_timeout
 
 
 SR = 22050
@@ -25,12 +25,12 @@ def save_spectrogram(spec, out_path):
     img = scale_minmax(spec, 0, 255).astype(numpy.uint8)
     img = numpy.flip(img, axis=0)  # put low frequencies at the bottom in image
     img = 255-img  # invert. make black==more energy
-    print(f"Image shape: {img.shape}")
+    # print(f"Image shape: {img.shape}")
     # save as PNG
     skimage.io.imsave(out_path, img)
 
 
-def get_spectrograms(audio_directory, input_csv, output_directory, duration, start_index, end_index, res) -> list[np.ndarray]:
+def get_spectrograms(audio_directory, input_csv, output_directory, duration, start_index, end_index, res, chorus) -> list[np.ndarray]:
     """
     This function takes in a directory of audio files in .wav format, computes the
     mel spectrogram for the files corresponding to the rows start_index to end_index in the input_csv,
@@ -64,10 +64,20 @@ def get_spectrograms(audio_directory, input_csv, output_directory, duration, sta
             print(f"specogram already exists: {image_path}, skipping...")
             continue
 
+        # getting the chorus start time
+        if chorus:
+            try:
+                offset = find_chorus_with_timeout(audio_path, duration) or 0
+            except Exception as e:
+                print(f"WARNING: problem with finding chorus: {e}, skipping...")
+                offset = 0
+        else:
+            offset = 0
+
         # Computing the mel spectrogram
         try:
-            spec= get_mel_spectrogram(
-                audio_path, offset=0, duration=duration, hop_length=hop_length )
+            spec = get_mel_spectrogram(
+                audio_path, offset, duration, hop_length)
         except FileNotFoundError:
             print(f"WARNING: file not found: {audio_path}, skipping...")
             continue
@@ -106,8 +116,8 @@ def get_mel_spectrogram(audio_path, offset, duration, hop_length) -> np.ndarray:
     n_mels = 128  # number of bins in spectrogram. Height of image
 
     # Computing the mel spectrograms
-    spec= librosa.feature.melspectrogram(
+    spec = librosa.feature.melspectrogram(
         y=y, sr=sr, hop_length=hop_length, n_mels=n_mels)
-    spec= librosa.power_to_db(spec, ref=np.max)  # converting to decibals
+    spec = librosa.power_to_db(spec, ref=np.max)  # converting to decibals
 
     return spec
