@@ -19,3 +19,4 @@ pytube
 scikit-image
 pychorus
 torchaudio
+ffmpeg-python

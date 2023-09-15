@@ -1,8 +1,7 @@
 from torch.utils.data import Dataset
-from src.RNN_utils.audio_utils import rechannel, get_chorus, createSpect
-import torchaudio
+import torch
 
-
+"""
 class SoundDS(Dataset):
 	def __init__(self, df, data_path, channel = 1, ext = '.mp3', duration = 30, n_mel=128, n_fft=400,win_length=400):
 		self.df = df
@@ -32,4 +31,22 @@ class SoundDS(Dataset):
 
 		#create the mel-spectogram
 		sgram = createSpect(aud, n_mels=self.n_mel, n_fft=self.n_fft, win_length=self.win_length)
+		return sgram, class_id
+"""
+
+class SoundDS(Dataset):
+	def __init__(self, df, data_path):
+		self.df = df
+		self.indices =  df.index
+		self.data_path = str(data_path)
+	
+	def __len__(self):
+		return len(self.df)    
+
+	def __getitem__(self, idx):
+		song_path = self.data_path + '/' + self.df.loc[idx,'id'] + '.pt'
+		class_id = self.df.loc[self.indices[idx], 'viral']
+
+		#load the spectorgram tensor file
+		sgram = torch.load(song_path)
 		return sgram, class_id
