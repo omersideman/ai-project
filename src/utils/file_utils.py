@@ -54,25 +54,28 @@ def train_test_split(input_dir, output_dir, test_ratio):
         f'Number of testing images per class: {num_testing_images}')
 
     for class_name, num_testing_images in zip(classes, num_testing_images):
+        print(f'Processing class: {class_name}')
         # create subdirectories for each class in training and testing
         class_training_dir = os.path.join(training_path, class_name)
         class_testing_dir = os.path.join(testing_path, class_name)
         os.makedirs(class_training_dir, exist_ok=True)
         os.makedirs(class_testing_dir, exist_ok=True)
+        print(
+            f'Created subdirectories: {class_training_dir} and {class_testing_dir}')
 
-        # move images from input_dir to training and testing
+        # copy images from input_dir to training and testing
         class_dir = os.path.join(input_dir, class_name)
         class_files = os.listdir(class_dir)
         test_files = class_files[:num_testing_images]
         for f in test_files:
-            os.rename(os.path.join(class_dir, f),
-                      os.path.join(class_testing_dir, f))
+            # copy to testing dir
+            os.system(f'cp {os.path.join(class_dir, f)} {class_testing_dir}')
         train_files = class_files[num_testing_images:]
         for f in train_files:
-            os.rename(os.path.join(class_dir, f),
-                      os.path.join(class_training_dir, f))
+            # copy to training dir
+            os.system(f'cp {os.path.join(class_dir, f)} {class_training_dir}')
 
-        return training_path, testing_path
+    return training_path, testing_path
 
 
 def num_images(directory_path):

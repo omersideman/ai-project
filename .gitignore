@@ -3,6 +3,8 @@ data/track_downloads/*
 *DS_Store
 data/spectrograms*
 data/organized_spectrograms*
+data/tmp*
+outputs/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

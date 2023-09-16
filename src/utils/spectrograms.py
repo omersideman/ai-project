@@ -30,7 +30,7 @@ def save_spectrogram(spec, out_path):
     skimage.io.imsave(out_path, img)
 
 
-def get_spectrograms(audio_directory, input_csv, output_directory, duration, start_index, end_index, res, chorus) -> list[np.ndarray]:
+def get_spectrograms(audio_directory, input_csv, output_directory, duration, start_index, end_index=0, res='low', chorus=False) -> list[np.ndarray]:
     """
     This function takes in a directory of audio files in .wav format, computes the
     mel spectrogram for the files corresponding to the rows start_index to end_index in the input_csv,
@@ -47,6 +47,9 @@ def get_spectrograms(audio_directory, input_csv, output_directory, duration, sta
 
     # set resolution of spectrogram - bigger hops for lower resolution
     hop_length = 2048 if res == 'low' else 1024
+
+    if end_index == 0:
+        end_index = len(spotify_df)
 
     # Looping through each row in the df
     for i in range(start_index, end_index):
@@ -69,7 +72,8 @@ def get_spectrograms(audio_directory, input_csv, output_directory, duration, sta
             try:
                 offset = find_chorus_with_timeout(audio_path, duration) or 0
             except Exception as e:
-                print(f"WARNING: problem with finding chorus: {e}, skipping...")
+                print(
+                    f"WARNING: problem with finding chorus: {e}, skipping...")
                 offset = 0
         else:
             offset = 0
