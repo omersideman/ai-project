@@ -18,13 +18,17 @@ def rechannel(aud, new_channel = 1):
 
 
 def get_chorus(path, duration, aud):
-	sig, sr = aud
-	start = find_and_output_chorus(path, None, duration, True)
-	if start is None:
-		start = sig.shape[-1]/sr * 0.4
-	start = int(start)
-	sig = sig[:,start*sr:(start+duration)*sr]
-	return ((sig, sr))
+    sig, sr = aud
+    audio_len_sec = int(sig.shape[-1]//sr)
+    start = find_and_output_chorus(path, None, duration, True)
+    if start is None:
+        start = sig.shape[-1]/sr * 0.4
+    start = int(start)
+    if start+duration > audio_len_sec:
+        sig = sig[:,(audio_len_sec-duration)*sr:audio_len_sec*sr]
+    else:
+        sig = sig[:,start*sr:(start+duration)*sr]
+    return ((sig, sr))
 
 
 def createSpect(aud, n_mels=128, n_fft=400, win_length = 400, hop_len=None):

@@ -35,10 +35,11 @@ class SoundDS(Dataset):
 """
 
 class SoundDS(Dataset):
-	def __init__(self, df, data_path):
+	def __init__(self, df, data_path, channels=1):
 		self.df = df
 		self.indices =  df.index
 		self.data_path = str(data_path)
+		self.channels = channels
 	
 	def __len__(self):
 		return len(self.df)    
@@ -49,4 +50,12 @@ class SoundDS(Dataset):
 
 		#load the spectorgram tensor file
 		sgram = torch.load(song_path)
+		_, rows, columns = sgram.shape
+
+		# Only if there is only one channel, remove the dimension of the channels
+		if self.channels == 1:
+			sgram = sgram.reshape(rows, columns)
+		
+		# Change between the time dimension and the features dimension as LSTM requires
+		sgram = torch.transpose(sgram,dim0=-2,dim1=-1)
 		return sgram, class_id
