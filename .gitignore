@@ -4,6 +4,7 @@ data/track_downloads/*
 data/spectrograms*
 data/organized_spectrograms*
 data/tmp*
+data/temp*
 outputs/*
 
 # Byte-compiled / optimized / DLL files
