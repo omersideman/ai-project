@@ -21,8 +21,7 @@ class trainer():
         tot_corr = 0.0
         tot_loss = 0.0
         num_train = 0
-
-        for (X,y) in tqdm(iter(train_dl)):
+        for (X,y) in tqdm(iter(train_dl), desc='Train Batch'):
             loss, corr = self.train_batch(X,y)
             tot_loss += loss
             tot_corr += corr
@@ -44,7 +43,7 @@ class trainer():
         tot_loss = 0.0
         num_samples = 0
 
-        for (X,y) in tqdm(iter(dl)):
+        for (X,y) in tqdm(iter(dl), desc='Test Batch'):
             with torch.no_grad():
                 y_prob = self.model(X)
             tot_loss += self.loss_func(y_prob,y).item()
