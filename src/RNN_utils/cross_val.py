@@ -28,7 +28,7 @@ class crossValidate:
                                     sampler=torch.utils.data.SubsetRandomSampler(test_idx))
                             )
 
-    def runCV(self, trainer: trainer, epochs = 40):
+    def runCV(self, trainer: trainer, epochs = 40, verbose = True):
         train_results = {'loss': [0.0 for e in range(epochs)], 'accuracy': [0.0 for e in range(epochs)]}
         val_results = {'loss': [0.0 for e in range(epochs)], 'accuracy': [0.0 for e in range(epochs)]}
         add_func = lambda a,b: a + b
@@ -38,11 +38,15 @@ class crossValidate:
             trainer_cp = deepcopy(trainer)
             val_loss, val_acc = [], []
             for epoch in range(epochs):
+                trainer_cp.model.train()
                 trainer_cp.train_epoch(train_dl,epoch)
+                trainer_cp.model.eval()
                 loss, acc = trainer_cp.evaluate(val_dl)
-                print(f'Epoch {epoch}/{epochs}: ',{'loss_train':trainer_cp.results['loss'][-1], 'accuracy_train': trainer_cp.results['accuracy'][-1], 'loss_test': loss, 'accuracy_test': acc})
+                if verbose:
+                    print(f'Epoch {epoch}/{epochs}: ',{'loss_train':trainer_cp.results['loss'][-1], 'accuracy_train': trainer_cp.results['accuracy'][-1], 'loss_test': loss, 'accuracy_test': acc})
                 val_loss.append(loss); val_acc.append(acc)
-            
+            if not verbose:
+                print(f'Result: ',{'loss_train':trainer_cp.results['loss'][-1], 'accuracy_train': trainer_cp.results['accuracy'][-1], 'loss_test': loss, 'accuracy_test': acc})
             train_loss, train_acc = trainer_cp.results['loss'], trainer_cp.results['accuracy']
             
             # adding the training fold data

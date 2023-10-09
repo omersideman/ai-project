@@ -64,7 +64,7 @@ def stripplot(df, x, y, ax, palette=[colors[1], colors[2]]):
     set_style(ax)
 
 
-def plotCV(results, configures, size=(15, 10)):
+def plotCV(results, configures, size=(15, 10), title= 'CV results'):
     fig, axs = plt.subplots(2, 2, figsize=size)
     num_epochs = len(results[0][0][0])
 
@@ -78,7 +78,13 @@ def plotCV(results, configures, size=(15, 10)):
             axs[j][1].set_xlabel('epoch')
             axs[j][1].set_ylabel('accuracy')
 
+    fig.suptitle(title)
+    axs[0][0].title.set_text('train loss')
+    axs[0][1].title.set_text('train accuracy')
+    axs[1][0].title.set_text('test loss')
+    axs[1][1].title.set_text('test accuracy')
     plt.legend()
+    plt.show()
 
 
 def plot_audio_wave(wave):

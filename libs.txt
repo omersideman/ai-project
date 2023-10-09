@@ -1,0 +1,25 @@
+The following are the python libraries we used in our project: (pip install them)
+
+    scikit-learn
+    mypy
+    tqdm
+    ipykernel
+    spotipy
+    python-dotenv
+    pandas
+    types-requests
+    matplotlib
+    ipywidgets
+    seaborn
+    torch
+    numpy
+    librosa
+    flask
+    requests
+    pytube
+    scikit-image
+    pychorus
+    torchaudio
+    ffmpeg-python
+
+The following are libraries we used that required  

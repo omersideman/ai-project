@@ -21,11 +21,18 @@ class trainer():
         tot_corr = 0.0
         tot_loss = 0.0
         num_train = 0
-        for (X,y) in tqdm(iter(train_dl), desc='Train Batch'):
-            loss, corr = self.train_batch(X,y)
-            tot_loss += loss
-            tot_corr += corr
-            num_train += y.shape[0]
+        if verbose:
+            for (X,y) in tqdm(iter(train_dl), desc='Train Batch'):
+                loss, corr = self.train_batch(X,y)
+                tot_loss += loss
+                tot_corr += corr
+                num_train += y.shape[0]
+        else:
+            for (X,y) in iter(train_dl):
+                loss, corr = self.train_batch(X,y)
+                tot_loss += loss
+                tot_corr += corr
+                num_train += y.shape[0]
         
         self.results['loss'].append(tot_loss)
         self.results['accuracy'].append(tot_corr/num_train)
@@ -33,22 +40,36 @@ class trainer():
             print(f'Epoch #{epoch}: Loss - {tot_loss}, Accuracy - {tot_corr/num_train}')
 
     def train(self, train_dl, epochs=30, verbose = True):
-        for epoch in range(epochs):
-            self.train_epoch(train_dl,epoch, verbose)
-            self.scheduler.step()
+        if not verbose:
+            for epoch in tqdm(range(epochs)):
+                self.train_epoch(train_dl,epoch, verbose)
+                self.scheduler.step()
+            loss, acc = self.results['loss'][-1], self.results['accuracy'][-1]
+            print(f'Epoch #{epoch}: Loss - {loss}, Accuracy - {acc}')
+        else:
+            for epoch in range(epochs):
+                self.train_epoch(train_dl,epoch, verbose)
+                self.scheduler.step()
         return self.results
 
     def evaluate(self, dl, verbose = False):
         tot_corr = 0.0
         tot_loss = 0.0
         num_samples = 0
-
-        for (X,y) in tqdm(iter(dl), desc='Test Batch'):
-            with torch.no_grad():
-                y_prob = self.model(X)
-            tot_loss += self.loss_func(y_prob,y).item()
-            tot_corr += torch.sum(torch.argmax(y_prob,dim=1)==y).item()
-            num_samples += y.shape[0]
+        if verbose:
+            for (X,y) in tqdm(iter(dl), desc='Test Batch'):
+                with torch.no_grad():
+                    y_prob = self.model(X)
+                tot_loss += self.loss_func(y_prob,y).item()
+                tot_corr += torch.sum(torch.argmax(y_prob,dim=1)==y).item()
+                num_samples += y.shape[0]
+        else:
+            for (X,y) in iter(dl):
+                with torch.no_grad():
+                    y_prob = self.model(X)
+                tot_loss += self.loss_func(y_prob,y).item()
+                tot_corr += torch.sum(torch.argmax(y_prob,dim=1)==y).item()
+                num_samples += y.shape[0]
         if verbose:
             print(f'Val results: Loss - {tot_loss}, Accuracy - {tot_corr/num_samples}')
 
