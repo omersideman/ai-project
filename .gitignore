@@ -5,6 +5,7 @@ data/specs/*
 *DS_Store
 data/spectrograms*
 data/organized_spectrograms*
+data/temp*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
