@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from shutil import copyfile
 
-
 def split_classes_threshold(csv_path, spectrograms_path, out_path, class_names, high_th, low_th):
     class1_path, class2_path = [os.path.join(
         out_path, name) for name in class_names]
@@ -20,7 +19,7 @@ def split_classes_threshold(csv_path, spectrograms_path, out_path, class_names, 
         spectrogram_path = os.path.join(spectrograms_path, f"{row['id']}.png")
         class_path = class1_path if popularity >= high_th else (
             class2_path if popularity <= low_th else None)
-        print(f"popularity: {popularity}, class_path: {class_path}")
+        # print(f"popularity: {popularity}, class_path: {class_path}")
         if class_path and os.path.exists(spectrogram_path):
             copyfile(spectrogram_path, os.path.join(
                 class_path, os.path.basename(spectrogram_path)))

@@ -76,7 +76,7 @@ def get_spectrograms(audio_directory, input_csv, output_directory, duration, sta
                     f"WARNING: problem with finding chorus: {e}, skipping...")
                 offset = 0
         else:
-            offset = 0
+            offset = 60
 
         # Computing the mel spectrogram
         try:
