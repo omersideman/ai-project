@@ -12,7 +12,10 @@ class trainer():
     def train_batch(self, X, y):
         self.optimizer.zero_grad()
         y_prob = self.model(X)
-        loss = self.loss_func(y_prob,y)
+        rows = y.shape[0]
+        target = torch.zeros((rows,2))
+        target[torch.arange(rows), y] = 1
+        loss = self.loss_func(y_prob,target)
         loss.backward()
         self.optimizer.step()
         return loss.item(), torch.sum(torch.argmax(y_prob,dim=1)==y).item() 
@@ -58,16 +61,22 @@ class trainer():
         num_samples = 0
         if verbose:
             for (X,y) in tqdm(iter(dl), desc='Test Batch'):
+                rows = y.shape[0]
+                target = torch.zeros((rows,2))
+                target[torch.arange(rows), y] = 1
                 with torch.no_grad():
                     y_prob = self.model(X)
-                tot_loss += self.loss_func(y_prob,y).item()
+                tot_loss += self.loss_func(y_prob,target).item()
                 tot_corr += torch.sum(torch.argmax(y_prob,dim=1)==y).item()
                 num_samples += y.shape[0]
         else:
             for (X,y) in iter(dl):
+                rows = y.shape[0]
+                target = torch.zeros((rows,2))
+                target[torch.arange(rows), y] = 1
                 with torch.no_grad():
                     y_prob = self.model(X)
-                tot_loss += self.loss_func(y_prob,y).item()
+                tot_loss += self.loss_func(y_prob,target).item()
                 tot_corr += torch.sum(torch.argmax(y_prob,dim=1)==y).item()
                 num_samples += y.shape[0]
         if verbose:
