@@ -2,18 +2,19 @@ import torch
 from tqdm import tqdm
 
 class trainer():
-    def __init__(self, model, loss_func, optimizer, scheduler):
+    def __init__(self, model, loss_func, optimizer, scheduler, device):
         self.model = model
         self.loss_func = loss_func
         self.optimizer = optimizer
         self.scheduler = scheduler
+        self.device=device
         self.results = {'loss': [], 'accuracy': []}
 
     def train_batch(self, X, y):
         self.optimizer.zero_grad()
         y_prob = self.model(X)
         rows = y.shape[0]
-        target = torch.zeros((rows,2))
+        target = torch.zeros((rows,2),device=self.device)
         target[torch.arange(rows), y] = 1
         loss = self.loss_func(y_prob,target)
         loss.backward()
@@ -62,7 +63,7 @@ class trainer():
         if verbose:
             for (X,y) in tqdm(iter(dl), desc='Test Batch'):
                 rows = y.shape[0]
-                target = torch.zeros((rows,2))
+                target = torch.zeros((rows,2),device=self.device)
                 target[torch.arange(rows), y] = 1
                 with torch.no_grad():
                     y_prob = self.model(X)
@@ -72,7 +73,7 @@ class trainer():
         else:
             for (X,y) in iter(dl):
                 rows = y.shape[0]
-                target = torch.zeros((rows,2))
+                target = torch.zeros((rows,2),device=self.device)
                 target[torch.arange(rows), y] = 1
                 with torch.no_grad():
                     y_prob = self.model(X)

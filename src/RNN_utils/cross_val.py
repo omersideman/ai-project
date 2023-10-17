@@ -4,28 +4,33 @@ from src.RNN_utils.trainer import trainer
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from torch.utils.data import default_collate
 
 SEED = 42
 
 class crossValidate:
-    def __init__(self, train_ds, folds = 5, batch_size = 32):
+    def __init__(self, train_ds, device, folds = 5, batch_size = 32):
         self.batch_size = batch_size
         self.folds = folds
         self.train_dls = []
         self.val_dls = []
+        self.device = device
         kf = KFold(n_splits=folds, random_state=SEED, shuffle=True)
+        to_gpu = lambda x: list(map(lambda t: t.to(self.device), default_collate(x)))
         for (train_idx, test_idx) in kf.split(train_ds):
             self.train_dls.append(
                             torch.utils.data.DataLoader(
                                     dataset=train_ds,
                                     batch_size=batch_size,
-                                    sampler=torch.utils.data.SubsetRandomSampler(train_idx))
+                                    sampler=torch.utils.data.SubsetRandomSampler(train_idx),
+                                    collate_fn = to_gpu)
                             )
             self.val_dls.append(
                             torch.utils.data.DataLoader(
                                     dataset=train_ds,
                                     batch_size=batch_size,
-                                    sampler=torch.utils.data.SubsetRandomSampler(test_idx))
+                                    sampler=torch.utils.data.SubsetRandomSampler(test_idx),
+                                    collate_fn = to_gpu)
                             )
 
     def runCV(self, trainer: trainer, epochs = 40, verbose = True):
@@ -38,12 +43,8 @@ class crossValidate:
             trainer_cp = deepcopy(trainer)
             val_loss, val_acc = [], []
             for epoch in range(epochs):
-                trainer_cp.model.train()
-                trainer_cp.train_epoch(train_dl,epoch)
-                trainer_cp.model.eval()
-                loss, acc = trainer_cp.evaluate(val_dl)
-                if verbose:
-                    print(f'Epoch {epoch}/{epochs}: ',{'loss_train':trainer_cp.results['loss'][-1], 'accuracy_train': trainer_cp.results['accuracy'][-1], 'loss_test': loss, 'accuracy_test': acc})
+                trainer_cp.train_epoch(train_dl,epoch, verbose)
+                loss, acc = trainer_cp.evaluate(val_dl, verbose)
                 val_loss.append(loss); val_acc.append(acc)
             if not verbose:
                 print(f'Result: ',{'loss_train':trainer_cp.results['loss'][-1], 'accuracy_train': trainer_cp.results['accuracy'][-1], 'loss_test': loss, 'accuracy_test': acc})
