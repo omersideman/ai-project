@@ -2,24 +2,27 @@ The following are the python libraries we used in our project: (pip install them
 
     scikit-learn
     mypy
-    tqdm
+    tqdm            # progress bar
     ipykernel
-    spotipy
+    spotipy         # spotify features
     python-dotenv
-    pandas
-    types-requests
-    matplotlib
-    ipywidgets
-    seaborn
-    torch
-    numpy
-    librosa
+    pandas          # dataframes
+    types-requests 
+    matplotlib      # plottings
+    ipywidgets 
+    seaborn         # heatmaps
+    torch           # most of the NN work
+    torchaudio      # working with audio files
+    torchmetrics    # Confusion Matrix
+    kornia          # Focal Loss
+    numpy           # tensors type to work with the simple classifiers, except MLP
+    librosa         # working with audio files
     flask
-    requests
-    pytube
-    scikit-image
-    pychorus
-    torchaudio
-    ffmpeg-python
+    requests        # http requests
+    pytube          # for downloading the songs
+    scikit-image    # many simple models (not deep models) and other algorithms in the learning field
+    pychorus        # finding the chorus of song
+    ffmpeg-python   # python interface for ffmpeg
 
-The following are libraries we used that required  
+We also need to install ffmpeg library manually. ffmpeg is used for processing of audio files and we will use it in order to convert the audio file to a type torchaudio can work with.
+Installation instruction of ffmpeg can be found here: https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/
