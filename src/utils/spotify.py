@@ -7,13 +7,13 @@ from dotenv import load_dotenv
 import spotipy
 import pandas as pd
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-from file_utils import create_dirs_if_not_exist
+from src.utils.file_utils import create_dirs_if_not_exist
 from requests.exceptions import ReadTimeout  # type: ignore
 
 load_dotenv()
 
-# auth_manager = SpotifyClientCredentials()
-# sp = spotipy.Spotify(auth_manager=auth_manager)
+auth_manager = SpotifyClientCredentials()
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 scope = "playlist-modify-private playlist-modify-public"
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))

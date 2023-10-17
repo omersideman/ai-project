@@ -16,7 +16,8 @@ flask
 requests
 pytube
 # pyaudio
-youtube-search
 scikit-image
 pychorus
 kornia
+torchaudio
+ffmpeg-python

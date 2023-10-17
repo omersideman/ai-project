@@ -1,5 +1,7 @@
 .cache*
 data/track_downloads/*
+data/audio/*
+data/specs/*
 *DS_Store
 data/spectrograms*
 data/organized_spectrograms*

@@ -102,19 +102,19 @@ def load_audio_with_timeout(audio_path, offset, duration, sample_rate=22050, tim
     return yt, sr
 
 
-def find_chorus(audio_path, duration):
+def find_chorus(audio_path, duration, output_file = None):
     chorus_start_sec = find_and_output_chorus(
-        input_file=audio_path, output_file=None, clip_length=duration)
+        input_file=audio_path, output_file=output_file, clip_length=duration)
     return chorus_start_sec
 
 
-def find_chorus_with_timeout(audio_path, duration, timeout=10):
+def find_chorus_with_timeout(audio_path, duration, timeout=10, output_file = None):
     def handler(signum, frame):
         raise TimeoutError('Timeout loading audio file')
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(timeout)
     try:
-        chorus_start_sec = find_chorus(audio_path, duration)
+        chorus_start_sec = find_chorus(audio_path, duration, output_file)
     finally:
         signal.alarm(0)
     return chorus_start_sec
