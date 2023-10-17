@@ -19,3 +19,4 @@ pytube
 youtube-search
 scikit-image
 pychorus
+kornia
