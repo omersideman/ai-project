@@ -84,4 +84,3 @@ class trainer():
             print(f'Val results: Loss - {tot_loss}, Accuracy - {tot_corr/num_samples}')
 
         return tot_loss, tot_corr/num_samples
-            
