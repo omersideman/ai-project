@@ -64,7 +64,7 @@ def stripplot(df, x, y, ax, palette=[colors[1], colors[2]]):
     set_style(ax)
 
 
-def plotCV(results, configures, size=(15, 10), title= 'CV results'):
+def plotCV(results, configures, size=(15, 10), title='CV results'):
     fig, axs = plt.subplots(2, 2, figsize=size)
     num_epochs = len(results[0][0][0])
 
@@ -94,10 +94,14 @@ def plot_audio_wave(wave):
     plt.ylabel("Amplitude")
 
 
-def plot_mel_spectrogram(wave, sr, mel=True):
+def plot_spectrogram(wave, sr, mel=True):
     # Computing the mel spectrogram
-    spect = librosa.feature.melspectrogram(
-        y=wave, sr=sr, n_fft=2048, hop_length=512)
+    if mel:
+        spect = librosa.feature.melspectrogram(
+            y=wave, sr=sr, n_fft=2048, hop_length=512)
+    else:
+        spect = librosa.stft(wave)  # STFT of y
+
     spect_db = librosa.power_to_db(spect, ref=np.max)  # converting to decibals
     #
     # Plotting the spectrogram

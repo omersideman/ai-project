@@ -21,3 +21,4 @@ pychorus
 kornia
 torchaudio
 ffmpeg-python
+ffmpeg
