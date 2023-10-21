@@ -53,3 +53,7 @@ Training and testing a recurrent neural network on audio files. Recommended to r
 #### `CNN.ipynb`
 
 Training and testing a convolutional neural network on audio spectrograms. Recommended to run with GPU.
+
+#### `transformer.ipynb`
+
+Using transformer for feature extraction from audio input.

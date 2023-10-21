@@ -14,7 +14,7 @@ class SoundDS(Dataset):
 
   def __getitem__(self, idx):
     # song_path = self.data_path + '/' + self.df.loc[idx,'id'] + '.pt'
-    song_path = os.path.join(self.data_path, self.df.loc[idx,'id'] + '.pt')
+    song_path = os.path.join(self.data_path, self.df.loc[self.indices[idx],'id'] + '.pt')
     if not os.path.exists(song_path):
       print("File not found: ", song_path)
       raise FileNotFoundError(f"File not found: {song_path}")
