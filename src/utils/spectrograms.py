@@ -7,7 +7,7 @@ import librosa
 import numpy
 import skimage.io
 from src.utils.file_utils import create_dirs_if_not_exist
-from utils.audio_utils import load_audio_with_timeout, find_chorus_with_timeout
+from src.utils.audio_utils import load_audio_with_timeout, find_chorus_with_timeout
 
 
 SR = 22050
