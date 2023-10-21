@@ -3,7 +3,7 @@ import seaborn as sns
 import librosa
 import numpy as np
 
-colors = ["#09101F", "#72DDF7", '#F7AEF8']
+colors = ["#016A70", "#D2DE32", '#FF6969']
 
 
 def set_style(ax):
@@ -20,11 +20,11 @@ def hist(df, x, ax, main_color=colors[1], second_color=colors[0], bins=30):
     ax.lines[0].set_color(second_color)
     set_style(ax)
 
-    ax.set_xlabel(x.replace("_", " ").capitalize(), fontsize="medium")
+    ax.set_xlabel(x.replace("_", " ").capitalize(), fontsize="large")
     ax.set_ylabel("")
 
 
-def count(df, x, ax, main_color=colors[2], second_color=colors[0]):
+def count(df, x, ax, main_color=colors[1], second_color=colors[0]):
 
     ax.bar(df[x].value_counts().index, df[x].value_counts().values,
            color=main_color, edgecolor=second_color, linewidth=3)
@@ -93,9 +93,11 @@ def plot_audio_wave(wave):
     plt.xlabel("Time (samples)")
     plt.ylabel("Amplitude")
 
-def plot_spectrogram(wave, sr):
+
+def plot_mel_spectrogram(wave, sr, mel=True):
     # Computing the mel spectrogram
-    spect = librosa.feature.melspectrogram(y=wave, sr=sr, n_fft=2048, hop_length=512)
+    spect = librosa.feature.melspectrogram(
+        y=wave, sr=sr, n_fft=2048, hop_length=512)
     spect_db = librosa.power_to_db(spect, ref=np.max)  # converting to decibals
     #
     # Plotting the spectrogram

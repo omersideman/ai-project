@@ -18,5 +18,6 @@ pytube
 # pyaudio
 scikit-image
 pychorus
+kornia
 torchaudio
 ffmpeg-python
