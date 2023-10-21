@@ -109,5 +109,9 @@ def plot_spectrogram(wave, sr, mel=True):
     librosa.display.specshow(spect_db, sr=sr, x_axis="time", y_axis="log")
     plt.colorbar(format="%+2.0f dB")
 
-    plt.title("Mel Spectrogram")
-    print(f"Mel Spectrogram shape: {spect.shape}")
+    if mel:
+        plt.title("Mel Spectrogram")
+    else:
+        plt.title("Spectrogram")
+
+    return 
