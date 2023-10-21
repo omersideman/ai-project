@@ -15,10 +15,10 @@ librosa
 flask
 requests
 pytube
-# pyaudio
 scikit-image
 pychorus
 kornia
 torchaudio
 ffmpeg-python
 ffmpeg
+kornia
