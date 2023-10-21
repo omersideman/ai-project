@@ -14,7 +14,7 @@ Using AI to predict whether new music will go viral on social media.
    ```
 2. Duplicate .env.example, rename to .env and replace keys (only if need to use spotify api, aka run the d) and path to src directory.
 
-#### Running the Notebooks
+## Running the Notebooks
 
 ### Data Loading
 
