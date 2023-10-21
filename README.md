@@ -12,23 +12,13 @@ Using AI to predict whether new music will go viral on social media.
        pip install -r requirements.txt
        python -m ipykernel install --user --name=venv
    ```
-2. Duplicate .env.example, rename to .env and replace keys (only if need to use spotify api) and path to src directory.
+2. Duplicate .env.example, rename to .env and replace keys (only if need to use spotify api, aka run the d) and path to src directory.
 
-### Other important things
+#### Running the Notebooks
 
-1. When creating a new notebook, paste this at the top:
+### Data Loading
 
-```
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-import sys; sys.path.append('..')
-import os
-from dotenv import load_dotenv
-load_dotenv()
-src_dir = os.getenv('SRC_DIR')
-assert(src_dir)
-os.chdir(src_dir)
-```
-
-2. when installing a new package,make sure to add it to requirements.txt
+Here we are using raw data scraped from [chartex.com](https://chartex.com/tiktok-music-chart-top-songs-from-tiktok/sort/number-videos-desc), which we saved in `data/chartex`. Each JSON file contains data for 200 tracks, including their Spotify ids which is what interests us.
+Because we are using the Spotify API to run this notebook, it is necessary to obtain an API key (for free) from [the Spotify developer website](https://developer.spotify.com/documentation/web-api/tutorials/getting-started). Next, duplicate .env.example, rename to .env and replace keys.
+Now we can run the notebook. You will be prompted to log in to Spotify from your browser.
+Note getting data from all the pages may take a while, like many other notebooks in this project.
