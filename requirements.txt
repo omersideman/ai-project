@@ -10,6 +10,9 @@ matplotlib
 ipywidgets
 seaborn
 torch
+torchaudio
+torchmetrics
+kornia
 numpy
 librosa
 flask
@@ -17,9 +20,4 @@ requests
 pytube
 scikit-image
 pychorus
-kornia
-torchaudio
 ffmpeg-python
-ffmpeg
-kornia
-torchaudio
