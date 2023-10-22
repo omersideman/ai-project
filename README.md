@@ -17,7 +17,8 @@ Using AI to predict whether new music will go viral on social media.
 
 ## Submission directory structure and explanation
 
-go-viral:\n
+go-viral:
+
 |- data: Containing all the data for this project.
 
     |-audio_mp3: All the .mp3 files of the songs would be saved here.
