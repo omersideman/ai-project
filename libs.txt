@@ -13,6 +13,7 @@ The following are the python libraries we used in our project: (pip install them
     seaborn         # heatmaps
     torch           # most of the NN work
     torchaudio      # working with audio files
+    torchvision     # for pretrained CNN models
     torchmetrics    # Confusion Matrix
     kornia          # Focal Loss
     numpy           # tensors type to work with the simple classifiers, except MLP
