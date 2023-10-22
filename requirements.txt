@@ -11,6 +11,7 @@ ipywidgets
 seaborn
 torch
 torchaudio
+torchvision
 torchmetrics
 kornia
 numpy
