@@ -17,52 +17,29 @@ Using AI to predict whether new music will go viral on social media.
 
 ## Submission directory structure and explanation
 
-go-viral:
-
-|- data: Containing all the data for this project.
-
-    |-audio_mp3: All the .mp3 files of the songs would be saved here.
-    
-    |-audio_wav: All the .wav files of the songs would be saved here. We need it as well because when we download the audio files from youtube, we get them in .wav format.
-    
-    |-csv_files: Some intermediate .csv files of the dataset.
-    
-    |-specs: All the spectrogram of the songs would be saved here.
-    
-|- notebooks: containing all the jupyter notebooks we created in this project.
-
-|- src:
-
-    |-RNN_utils: We used the code here for both the RNN, CNN and Spotify feature's MLP.
-    
-        |-audio_utils.py: Some audio utils like rechanneling for the creation of the spectrogram.
-        
-        |-cross_val.py: The cross validation class and a function to print the cross validation results.
-        
-        |-dataset.py: The dataset classes that will be used for the dataloader.
-        
-        |-trainer.py: The trainining class for the deep models.
-        
-    |-utils: Some utils functions for different tasks we encouter thourgh the project.
-    
-        |-audio_utils.py
-        
-        |-csv_utils.py
-        
-        |-file_utils.py
-        
-        |-image_utils.py
-        
-        |-plot_utils.py
-        
-        |-spectrograms.py
-        
-        |-spotify.py
-        
-|-libs.txt
-
-|-README.md
-
+go-viral:  
+|- data: Containing all the data for this project.  
+    |-audio_mp3: All the .mp3 files of the songs would be saved here.  
+    |-audio_wav: All the .wav files of the songs would be saved here. We need it as well because when we download the audio files from youtube, we get them in .wav format.  
+    |-csv_files: Some intermediate .csv files of the dataset.  
+    |-specs: All the spectrogram of the songs would be saved here.  
+|- notebooks: containing all the jupyter notebooks we created in this project.  
+|- src:  
+    |-RNN_utils: We used the code here for both the RNN, CNN and Spotify feature's MLP.  
+        |-audio_utils.py: Some audio utils like rechanneling for the creation of the spectrogram.  
+        |-cross_val.py: The cross validation class and a function to print the cross validation results.  
+        |-dataset.py: The dataset classes that will be used for the dataloader.  
+        |-trainer.py: The trainining class for the deep models.  
+    |-utils: Some utils functions for different tasks we encouter thourgh the project.  
+        |-audio_utils.py  
+        |-csv_utils.py  
+        |-file_utils.py  
+        |-image_utils.py  
+        |-plot_utils.py  
+        |-spectrograms.py  
+        |-spotify.py  
+|-libs.txt  
+|-README.md  
 |-requirements.txt
 
 ## Notebook's explanations
