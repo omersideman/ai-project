@@ -10,6 +10,7 @@ data/temp*
 data/audio*
 outputs/*
 data/specs*
+data/track_downloads*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
